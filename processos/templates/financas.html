@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; margin-top: 30px; padding: 0 15px;">
+    <!-- Cabeçalho -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h1 style="color: #2c3e50; font-weight: 400;">Controle Financeiro</h1>
+        <div>
+            <button id="btn-diario" class="periodo-btn active">Diário</button>
+            <button id="btn-semanal" class="periodo-btn">Semanal</button>
+            <button id="btn-mensal" class="periodo-btn">Mensal</button>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+        <!-- Lista de Processos -->
+        <div style="flex: 1; min-width: 400px;">
+            <div style="background: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div style="background: #34495e; color: white; padding: 12px 15px; border-radius: 5px 5px 0 0;">
+                    <h2 style="margin: 0; font-size: 16px; font-weight: 500;">Processos e Recebimentos</h2>
+                </div>
+                <div style="padding: 10px 0; max-height: 600px; overflow-y: auto;">
+                    <!-- Processo 1 -->
+                    <div style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div style="font-weight: 500; color: #2c3e50;">Processo #2023-001</div>
+                                <div style="font-size: 13px; color: #7f8c8d;">Cliente: João Mendonça</div>
+                            </div>
+                            <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
+                                Ativo
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;">
+                                <span style="color: #7f8c8d;">10/03/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 1.500,00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: #7f8c8d;">05/05/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 2.300,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processo 2 -->
+                    <div style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div style="font-weight: 500; color: #2c3e50;">Processo #2023-017</div>
+                                <div style="font-size: 13px; color: #7f8c8d;">Cliente: Empresa XYZ Ltda.</div>
+                            </div>
+                            <span style="background: #95a5a6; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
+                                Encerrado
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;">
+                                <span style="color: #7f8c8d;">15/02/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 3.800,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processo 3 -->
+                    <div style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div style="font-weight: 500; color: #2c3e50;">Processo #2023-045</div>
+                                <div style="font-size: 13px; color: #7f8c8d;">Cliente: Maria Silva</div>
+                            </div>
+                            <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
+                                Ativo
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;">
+                                <span style="color: #7f8c8d;">22/04/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 1.200,00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px;">
+                                <span style="color: #7f8c8d;">10/06/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 1.200,00</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: #7f8c8d;">05/07/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 1.200,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processo 4 -->
+                    <div style="padding: 12px 15px; border-bottom: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <div style="font-weight: 500; color: #2c3e50;">Processo #2023-108</div>
+                                <div style="font-size: 13px; color: #7f8c8d;">Cliente: Carlos Andrade</div>
+                            </div>
+                            <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 10px; font-size: 12px;">
+                                Ativo
+                            </span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                <span style="color: #7f8c8d;">18/07/2023</span>
+                                <span style="font-weight: 500; color: #27ae60;">+ R$ 2.500,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo e Gráfico -->
+        <div style="flex: 1; min-width: 400px; display: flex; flex-direction: column; gap: 25px;">
+            <!-- Resumo Financeiro -->
+            <div style="background: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div style="background: #34495e; color: white; padding: 12px 15px; border-radius: 5px 5px 0 0;">
+                    <h2 style="margin: 0; font-size: 16px; font-weight: 500;">Resumo Financeiro</h2>
+                </div>
+                <div style="padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #7f8c8d;">Total Recebido:</span>
+                        <span style="font-weight: 500; color: #27ae60;">R$ 13.700,00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #7f8c8d;">Média Mensal:</span>
+                        <span style="font-weight: 500;">R$ 2.283,33</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #7f8c8d;">Processos Ativos:</span>
+                        <span style="font-weight: 500;">3</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #7f8c8d;">Maior Recebimento:</span>
+                        <span style="font-weight: 500;">R$ 3.800,00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Recebimentos -->
+            <div style="background: white; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div style="background: #34495e; color: white; padding: 12px 15px; border-radius: 5px 5px 0 0;">
+                    <h2 style="margin: 0; font-size: 16px; font-weight: 500;">Recebimentos Mensais</h2>
+                </div>
+                <div style="padding: 15px;">
+                    <canvas id="graficoRecebimentos" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript para o gráfico -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Controle dos botões de período
+    document.querySelectorAll('.periodo-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.periodo-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            // Aqui você pode adicionar a lógica para atualizar os dados conforme o período selecionado
+        });
+    });
+
+    // Gráfico de recebimentos
+    const ctx = document.getElementById('graficoRecebimentos').getContext('2d');
+    const recebimentosChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Recebimentos (R$)',
+                data: [2800, 3800, 1500, 1200, 2300, 1200, 2500],
+                backgroundColor: [
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)',
+                    'rgba(52, 152, 219, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)',
+                    'rgba(52, 152, 219, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'R$ ' + value.toLocaleString('pt-BR');
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'R$ ' + context.raw.toLocaleString('pt-BR');
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<!-- Estilos Adicionais -->
+<style>
+    .periodo-btn {
+        background: #ecf0f1;
+        border: none;
+        padding: 6px 12px;
+        margin: 0 3px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #7f8c8d;
+    }
+
+    .periodo-btn.active {
+        background: #34495e;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 10px;
+        }
+        div[style*="min-width: 400px"] {
+            min-width: 100% !important;
+        }
+    }
+</style>
+{% endblock %}

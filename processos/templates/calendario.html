@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Calendário Jurídico{% endblock %}
+{% block content %}
+
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js'></script>
+
+<div class="container-fluid mt-4" style="max-width: 1400px; position: relative;">
+    <h1 class="text-center" style="color: #2c3e50; margin-bottom: 30px;">Agenda Jurídica</h1>
+    
+   <!-- Botão Flutuante "+" que redireciona para a página de eventos -->
+    <a href="{% url 'eventos' %}" class="floating-btn" title="Adicionar Evento">
+        <span style="font-size: 28px; padding-bottom: 20%;">+</span>
+    </a>
+    
+    <div id="calendar"></div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializa o calendário
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'pt-br',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+            today: 'Hoje',
+            month: 'Mês',
+            week: 'Semana',
+            day: 'Dia'
+        },
+        events: '/atividades-json/',
+        dateClick: function(info) {
+            openModal(info.dateStr);
+        },
+        eventClick: function(info) {
+            // Preenche o modal para edição
+            const event = info.event;
+            document.getElementById('eventId').value = event.id;
+            document.getElementById('eventType').value = event.extendedProps.type || '';
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventDate').value = event.start.toISOString().split('T')[0];
+            document.getElementById('eventTime').value = event.start.toTimeString().substring(0,5);
+            document.getElementById('eventLocation').value = event.extendedProps.location || '';
+            document.getElementById('eventDescription').value = event.extendedProps.description || '';
+            
+            // Altera o texto do botão para "Atualizar"
+            document.getElementById('saveEvent').textContent = 'Atualizar Evento';
+            
+            // Abre o modal
+            $('#eventModal').modal('show');
+        },
+        eventContent: function(arg) {
+            // Personaliza a exibição dos eventos
+            const typeIcon = {
+                'audiencia': '⚖️',
+                'reuniao': '👥',
+                'prazo': '⏳',
+                'outro': '📅'
+            };
+            
+            const icon = typeIcon[arg.event.extendedProps.type] || '📅';
+            
+            return {
+                html: `<div class="fc-event-main">
+                         <span class="event-icon">${icon}</span>
+                         ${arg.event.title}
+                       </div>`
+            };
+        }
+    });
+    
+    calendar.render();
+    
+    // Botão flutuante para adicionar eventos
+    document.getElementById('addEventBtn').addEventListener('click', function() {
+        openModal();
+    });
+    
+    // Salvar/Atualizar evento
+    document.getElementById('saveEvent').addEventListener('click', function() {
+        const eventId = document.getElementById('eventId').value;
+        const eventType = document.getElementById('eventType').value;
+        const eventTitle = document.getElementById('eventTitle').value;
+        const eventDate = document.getElementById('eventDate').value;
+        const eventTime = document.getElementById('eventTime').value;
+        const eventLocation = document.getElementById('eventLocation').value;
+        const eventDescription = document.getElementById('eventDescription').value;
+        
+        const eventData = {
+            title: eventTitle,
+            start: eventDate + 'T' + eventTime,
+            extendedProps: {
+                type: eventType,
+                location: eventLocation,
+                description: eventDescription
+            }
+        };
+        
+        if (eventId) {
+            // Atualizar evento existente
+            const event = calendar.getEventById(eventId);
+            event.setProp('title', eventTitle);
+            event.setStart(eventDate + 'T' + eventTime);
+            event.setExtendedProp('type', eventType);
+            event.setExtendedProp('location', eventLocation);
+            event.setExtendedProp('description', eventDescription);
+        } else {
+            // Adicionar novo evento
+            calendar.addEvent(eventData);
+        }
+        
+        // Aqui você deve adicionar o código para salvar no backend via AJAX
+        console.log('Evento salvo:', eventData);
+        
+        // Fechar modal e limpar formulário
+        $('#eventModal').modal('hide');
+        resetForm();
+    });
+    
+    // Função para abrir o modal
+    function openModal(dateStr = '') {
+        resetForm();
+        
+        if (dateStr) {
+            document.getElementById('eventDate').value = dateStr;
+        } else {
+            const today = new Date();
+            document.getElementById('eventDate').value = today.toISOString().split('T')[0];
+            document.getElementById('eventTime').value = today.toTimeString().substring(0,5);
+        }
+        
+        document.getElementById('saveEvent').textContent = 'Salvar Evento';
+        $('#eventModal').modal('show');
+    }
+    
+    // Função para resetar o formulário
+    function resetForm() {
+        document.getElementById('eventForm').reset();
+        document.getElementById('eventId').value = '';
+    }
+});
+</script>
+
+<style>
+    /* Estilo do Calendário */
+    #calendar {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .fc-event {
+        cursor: pointer;
+        border: none;
+    }
+    
+    .fc-event-main {
+        padding: 3px 5px;
+        font-size: 0.9em;
+    }
+    
+    .event-icon {
+        margin-right: 5px;
+    }
+    
+    /* Botão Flutuante */
+    .floating-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: #34495e;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+    
+    .floating-btn:hover {
+        background-color: #2c3e50;
+        transform: scale(1.1);
+    }
+    
+    /* Cores para diferentes tipos de eventos */
+    .fc-event[data-event-type="audiencia"] {
+        background-color: #e74c3c;
+        border-color: #c0392b;
+    }
+    
+    .fc-event[data-event-type="reuniao"] {
+        background-color: #3498db;
+        border-color: #2980b9;
+    }
+    
+    .fc-event[data-event-type="prazo"] {
+        background-color: #f39c12;
+        border-color: #e67e22;
+    }
+    
+    .fc-event[data-event-type="outro"] {
+        background-color: #2ecc71;
+        border-color: #27ae60;
+    }
+</style>
+{% endblock %}
