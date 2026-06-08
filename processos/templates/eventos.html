@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Novo Evento — JurisFlow{% endblock %}
+{% block page_title %}Novo Evento{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6 col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-calendar-plus me-2" style="color:#2563EB"></i>Agendar Evento
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div style="color:#DC2626;font-size:.78rem;margin-top:.25rem">{{ field.errors.0 }}</div>
+            {% endif %}
+            {% if field.help_text %}
+            <div style="color:#94A3B8;font-size:.75rem;margin-top:.2rem">{{ field.help_text }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <div class="d-flex gap-2 mt-4">
+            <a href="{% url 'calendario' %}" class="btn btn-outline-secondary flex-fill">Cancelar</a>
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Salvar Evento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

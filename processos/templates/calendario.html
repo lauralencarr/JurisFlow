@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Calendário — JurisFlow{% endblock %}
+{% block page_title %}Calendário{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css" rel="stylesheet">
+<style>
+  #calendar { background: transparent; }
+  .fc .fc-toolbar-title { font-size: 1rem; font-weight: 700; }
+  .fc .fc-button { font-size: 0.8rem; border-radius: 6px !important; }
+  .fc .fc-button-primary { background: #2563EB; border-color: #2563EB; }
+  .fc .fc-button-primary:hover { background: #1D4ED8; border-color: #1D4ED8; }
+  .fc .fc-button-primary:not(:disabled).fc-button-active { background: #1E3A8A; border-color: #1E3A8A; }
+  .fc .fc-daygrid-day:hover { background: #F8FAFC; }
+  .fc .fc-event { border: none; border-radius: 4px; font-size: 0.78rem; padding: 1px 4px; cursor: pointer; }
+  .fc .fc-col-header-cell { font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; }
+  .fc .fc-daygrid-day-number { font-size: 0.82rem; color: #0F172A; }
+  .fc .fc-day-today { background: #EFF6FF !important; }
+  .fc .fc-day-today .fc-daygrid-day-number { color: #2563EB; font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+  <a href="{% url 'evento_criar' %}" class="btn btn-primary">
+    <i class="bi bi-plus-circle me-2"></i>Novo Evento
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-body p-3">
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<!-- Modal de detalhe -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:12px;border:1px solid #E2E8F0">
+      <div class="modal-header" style="border-bottom:1px solid #E2E8F0;padding:1rem 1.25rem">
+        <h5 class="modal-title" id="modalTitle" style="font-size:.95rem;font-weight:700"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody" style="font-size:.875rem;padding:1.25rem"></div>
+      <div class="modal-footer" style="border-top:1px solid #E2E8F0;padding:.75rem 1.25rem">
+        <a href="{% url 'evento_criar' %}" class="btn btn-primary btn-sm">
+          <i class="bi bi-plus me-1"></i>Novo Evento
+        </a>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modal = new bootstrap.Modal(document.getElementById('eventModal'));
+
+  const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+    initialView: 'dayGridMonth',
+    locale: 'pt-br',
+    height: 'auto',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listMonth'
+    },
+    events: '{% url "eventos_api" %}',
+    eventClick: function (info) {
+      const p = info.event.extendedProps;
+      document.getElementById('modalTitle').textContent = info.event.title;
+      document.getElementById('modalBody').innerHTML =
+        `<div class="d-flex flex-column gap-2">
+          <div><span style="color:#64748B;font-size:.72rem;text-transform:uppercase;font-weight:700">Tipo</span><br>${p.tipo}</div>
+          ${p.local ? `<div><span style="color:#64748B;font-size:.72rem;text-transform:uppercase;font-weight:700">Local</span><br>${p.local}</div>` : ''}
+          <div><span style="color:#64748B;font-size:.72rem;text-transform:uppercase;font-weight:700">Processo</span><br>${p.processo}</div>
+          ${p.descricao ? `<div><span style="color:#64748B;font-size:.72rem;text-transform:uppercase;font-weight:700">Descrição</span><br>${p.descricao}</div>` : ''}
+        </div>`;
+      modal.show();
+    }
+  });
+
+  calendar.render();
+});
+</script>
+{% endblock %}

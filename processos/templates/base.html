@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}JurisFlow{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --sidebar-w: 252px;
+      --sidebar-bg: #0D1B2A;
+      --sidebar-border: rgba(255,255,255,0.07);
+      --sidebar-text: #8A9DC0;
+      --sidebar-active-bg: rgba(59,130,246,0.14);
+      --sidebar-active-text: #60A5FA;
+      --sidebar-hover-bg: rgba(255,255,255,0.05);
+      --primary: #2563EB;
+      --primary-h: #1D4ED8;
+      --success: #059669;
+      --warning: #D97706;
+      --danger: #DC2626;
+      --body-bg: #F1F5F9;
+      --card-border: #E2E8F0;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+      --text: #0F172A;
+      --text-muted: #64748B;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: var(--body-bg);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    /* ── Sidebar ───────────────────────────────── */
+    .jf-sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      border-right: 1px solid var(--sidebar-border);
+    }
+
+    .jf-brand {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--sidebar-border);
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .jf-brand-icon {
+      width: 36px; height: 36px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.05rem; flex-shrink: 0;
+    }
+    .jf-brand-name { color: #fff; font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+    .jf-brand-sub  { color: var(--sidebar-text); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.07em; }
+
+    .jf-nav { flex: 1; padding: 0.875rem 0.75rem; overflow-y: auto; }
+    .jf-nav-section {
+      color: var(--sidebar-text);
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      padding: 0.5rem 0.5rem 0.25rem;
+      margin-top: 0.5rem;
+    }
+    .jf-nav-link {
+      display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.45rem 0.625rem;
+      border-radius: 7px;
+      color: var(--sidebar-text);
+      font-size: 0.85rem; font-weight: 500;
+      text-decoration: none;
+      transition: background 0.13s, color 0.13s;
+      margin-bottom: 0.1rem;
+    }
+    .jf-nav-link:hover { background: var(--sidebar-hover-bg); color: #fff; }
+    .jf-nav-link.active { background: var(--sidebar-active-bg); color: var(--sidebar-active-text); }
+    .jf-nav-link i { font-size: 1rem; width: 1.1rem; text-align: center; flex-shrink: 0; }
+
+    .jf-sidebar-footer {
+      padding: 0.875rem 0.75rem;
+      border-top: 1px solid var(--sidebar-border);
+      flex-shrink: 0;
+    }
+    .jf-user {
+      display: flex; align-items: center; gap: 0.625rem;
+    }
+    .jf-user-avatar {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--primary), #7C3AED);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.8rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .jf-user-name  { color: #fff; font-size: 0.82rem; font-weight: 600; }
+    .jf-user-role  { color: var(--sidebar-text); font-size: 0.72rem; }
+    .jf-logout {
+      margin-left: auto; color: var(--sidebar-text);
+      text-decoration: none; padding: 0.3rem 0.4rem;
+      border-radius: 6px; transition: all 0.13s;
+    }
+    .jf-logout:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    /* ── Main ──────────────────────────────────── */
+    .jf-main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .jf-topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex; align-items: center;
+      position: sticky; top: 0; z-index: 100;
+      gap: 1rem;
+    }
+    .jf-topbar-title { font-size: 0.95rem; font-weight: 700; color: var(--text); margin: 0; }
+
+    .jf-page { flex: 1; padding: 1.5rem; }
+
+    /* ── Cards ─────────────────────────────────── */
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+      background: #fff;
+    }
+    .card-header {
+      background: transparent;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.875rem 1.125rem;
+      font-weight: 600; font-size: 0.875rem;
+      display: flex; align-items: center;
+    }
+    .card-body { padding: 1.125rem; }
+
+    /* ── Stat cards ─────────────────────────────── */
+    .stat-card {
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      background: #fff;
+      padding: 1.1rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.15s;
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); }
+    .stat-icon {
+      width: 40px; height: 40px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; flex-shrink: 0;
+    }
+    .stat-value { font-size: 1.55rem; font-weight: 700; line-height: 1.15; }
+    .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; margin-top: 0.2rem; }
+
+    /* ── Table ──────────────────────────────────── */
+    .table { font-size: 0.85rem; }
+    .table th {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--card-border) !important;
+      padding: 0.625rem 1rem;
+    }
+    .table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid #F8FAFC;
+      vertical-align: middle;
+    }
+    .table tbody tr:last-child td { border-bottom: none; }
+    .table tbody tr:hover td { background: #F8FAFC; }
+
+    /* ── Badges ─────────────────────────────────── */
+    .jf-badge {
+      display: inline-flex; align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 600;
+    }
+    .jf-badge-success { background: #F0FDF4; color: #059669; }
+    .jf-badge-warning { background: #FFFBEB; color: #D97706; }
+    .jf-badge-danger  { background: #FEF2F2; color: #DC2626; }
+    .jf-badge-muted   { background: #F1F5F9; color: #64748B; }
+    .jf-badge-info    { background: #EFF6FF; color: #2563EB; }
+    .jf-badge-purple  { background: #F5F3FF; color: #7C3AED; }
+
+    /* ── Buttons ─────────────────────────────────── */
+    .btn-primary { background: var(--primary); border-color: var(--primary); font-weight: 600; }
+    .btn-primary:hover { background: var(--primary-h); border-color: var(--primary-h); }
+    .btn { border-radius: 7px; font-size: 0.85rem; }
+
+    .btn-icon {
+      width: 30px; height: 30px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 6px; border: 1px solid var(--card-border);
+      background: #fff; color: var(--text-muted);
+      font-size: 0.8rem; cursor: pointer; transition: all 0.13s;
+      text-decoration: none; padding: 0;
+    }
+    .btn-icon:hover { background: #F8FAFC; color: var(--primary); border-color: var(--primary); }
+    .btn-icon.del:hover { background: #FEF2F2; color: var(--danger); border-color: var(--danger); }
+
+    /* ── Forms ──────────────────────────────────── */
+    .form-control, .form-select {
+      border-color: var(--card-border);
+      border-radius: 7px;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.75rem;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    .form-label {
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── Alerts ─────────────────────────────────── */
+    .alert { border-radius: 8px; font-size: 0.85rem; border: none; }
+
+    /* ── Section header ─────────────────────────── */
+    .jf-section-head {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+    }
+    .jf-section-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
+
+    /* ── Mobile ─────────────────────────────────── */
+    @media (max-width: 768px) {
+      .jf-sidebar { transform: translateX(-100%); transition: transform 0.25s; }
+      .jf-sidebar.open { transform: translateX(0); }
+      .jf-main { margin-left: 0; }
+      .jf-topbar-toggle { display: flex !important; }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="jf-sidebar" id="sidebar">
+  <a href="{% url 'home' %}" class="jf-brand">
+    <div class="jf-brand-icon"><i class="bi bi-scales"></i></div>
+    <div>
+      <div class="jf-brand-name">JurisFlow</div>
+      <div class="jf-brand-sub">Sistema Jurídico</div>
+    </div>
+  </a>
+
+  <nav class="jf-nav">
+    <div class="jf-nav-section">Principal</div>
+    <a href="{% url 'home' %}" class="jf-nav-link {% if page == 'home' %}active{% endif %}">
+      <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+    </a>
+    <a href="{% url 'processos' %}" class="jf-nav-link {% if page == 'processos' %}active{% endif %}">
+      <i class="bi bi-briefcase"></i><span>Processos</span>
+    </a>
+    <a href="{% url 'clientes' %}" class="jf-nav-link {% if page == 'clientes' %}active{% endif %}">
+      <i class="bi bi-people"></i><span>Clientes</span>
+    </a>
+
+    <div class="jf-nav-section" style="margin-top:.6rem">Gestão</div>
+    <a href="{% url 'calendario' %}" class="jf-nav-link {% if page == 'calendario' %}active{% endif %}">
+      <i class="bi bi-calendar3"></i><span>Calendário</span>
+    </a>
+    <a href="{% url 'financas' %}" class="jf-nav-link {% if page == 'financas' %}active{% endif %}">
+      <i class="bi bi-wallet2"></i><span>Finanças</span>
+    </a>
+  </nav>
+
+  <div class="jf-sidebar-footer">
+    {% if user.is_authenticated %}
+    <div class="jf-user">
+      <div class="jf-user-avatar">{{ user.username|first|upper }}</div>
+      <div>
+        <div class="jf-user-name">{{ user.username }}</div>
+        <div class="jf-user-role">Advogado(a)</div>
+      </div>
+      <a href="{% url 'logout' %}" class="jf-logout" title="Sair">
+        <i class="bi bi-box-arrow-right"></i>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="jf-main">
+  <header class="jf-topbar">
+    <button class="btn btn-sm btn-outline-secondary d-none" id="sidebarToggle" style="border-radius:6px">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="jf-topbar-title">{% block page_title %}Dashboard{% endblock %}</h1>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible py-1 px-3 mb-0 small" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="jf-page">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

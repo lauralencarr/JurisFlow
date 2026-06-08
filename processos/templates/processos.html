@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Processos — JurisFlow{% endblock %}
+{% block page_title %}Processos{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <!-- Formulário -->
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-plus-circle me-2" style="color:#2563EB"></i>Novo Processo
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <div style="color:#DC2626;font-size:.78rem;margin-top:.25rem">{{ field.errors.0 }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary w-100 mt-1">
+            <i class="bi bi-plus me-1"></i>Cadastrar Processo
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header justify-content-between">
+        <span>Todos os Processos</span>
+        <span style="color:#94A3B8;font-size:.78rem;margin-left:auto">{{ processos.count }} registro{{ processos.count|pluralize }}</span>
+      </div>
+      {% if processos %}
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Número</th>
+              <th>Cliente</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in processos %}
+            <tr>
+              <td><span style="font-weight:600">{{ p.numero }}</span></td>
+              <td>{{ p.cliente.nome }}</td>
+              <td>{{ p.get_tipo_display }}</td>
+              <td>{% if p.valor %}R$&nbsp;{{ p.valor|floatformat:2 }}{% else %}<span style="color:#CBD5E1">—</span>{% endif %}</td>
+              <td>
+                {% if p.status == 'aberto' %}<span class="jf-badge jf-badge-success">Aberto</span>
+                {% elif p.status == 'encerrado' %}<span class="jf-badge jf-badge-muted">Encerrado</span>
+                {% elif p.status == 'suspenso' %}<span class="jf-badge jf-badge-warning">Suspenso</span>
+                {% else %}<span class="jf-badge jf-badge-info">{{ p.get_status_display }}</span>{% endif %}
+              </td>
+              <td>
+                <form method="post" action="{% url 'processo_delete' p.pk %}" class="d-inline"
+                      onsubmit="return confirm('Excluir o processo {{ p.numero }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-icon del" title="Excluir">
+                    <i class="bi bi-trash3"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="card-body text-center py-5" style="color:#94A3B8">
+        <i class="bi bi-briefcase" style="font-size:2.5rem"></i>
+        <p class="mt-2" style="font-size:.875rem">Nenhum processo cadastrado</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
