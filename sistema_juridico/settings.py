@@ -22,7 +22,9 @@ ALLOWED_HOSTS = os.environ.get(
     'localhost,127.0.0.1'
 ).split(',')
 
-# Permite domínios Vercel automaticamente
+# Permite todos os subdomínios do Vercel automaticamente
+ALLOWED_HOSTS += ['.vercel.app', 'vercel.app']
+
 VERCEL_URL = os.environ.get('VERCEL_URL', '')
 if VERCEL_URL:
     ALLOWED_HOSTS.append(VERCEL_URL)
