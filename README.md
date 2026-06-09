@@ -1,5 +1,5 @@
 JurisFlow is a legal case management system designed for law firms, enabling efficient task organization, client interaction, and financial oversight — all in one place. 
-With a Trello-style board layout, calendar integration, and customizable activity tracking (meetings, hearings, legal deadlines), JurisFlow brings structure and clarity to legal workflows.
+With a Trello-style board layout, calendar integration, and customizable activity tracking (meetings, hearings, legal deadlines), JurisFlow brings structure and clarity to legal workflows
 
 Features
 
