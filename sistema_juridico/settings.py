@@ -4,6 +4,7 @@ Django settings for sistema_juridico project.
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,8 +77,12 @@ WSGI_APPLICATION = 'sistema_juridico.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL', '') or os.environ.get('POSTGRES_URL', '')
 
 if DATABASE_URL:
+    parsed = urlparse(DATABASE_URL)
+    qs = parse_qs(parsed.query)
+    qs.pop('supa', None)
+    clean_url = urlunparse(parsed._replace(query=urlencode(qs, doseq=True)))
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        'default': dj_database_url.parse(clean_url, conn_max_age=600)
     }
 else:
     DATABASES = {
