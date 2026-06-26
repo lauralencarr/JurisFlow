@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-wc8*3q-7&mz$sw@ho03l^h1q+=n&62c!8r!8w(#$jt@tk$37f0'
 )
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
@@ -28,6 +28,8 @@ ALLOWED_HOSTS += ['.vercel.app', 'vercel.app']
 VERCEL_URL = os.environ.get('VERCEL_URL', '')
 if VERCEL_URL:
     ALLOWED_HOSTS.append(VERCEL_URL)
+
+CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
 
 # ── Apps ────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
@@ -71,16 +73,13 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sistema_juridico.wsgi.application'
 
 # ── Banco de dados ──────────────────────────────────────────────────────────
-# Em produção: defina DATABASE_URL como variável de ambiente no Vercel
-# Ex: postgres://user:password@host:5432/dbname
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
+DATABASE_URL = os.environ.get('DATABASE_URL', '') or os.environ.get('POSTGRES_URL', '')
 
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    # Desenvolvimento local com SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
