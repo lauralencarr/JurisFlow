@@ -225,6 +225,11 @@ def financas_view(request):
         TransacaoFinanceira.objects.filter(situacao='pendente')
         .aggregate(total=Sum('valor'))['total'] or 0
     )
+    total_transacoes = TransacaoFinanceira.objects.count()
+    cancelado_total = (
+        TransacaoFinanceira.objects.filter(situacao='cancelado')
+        .aggregate(total=Sum('valor'))['total'] or 0
+    )
     transacoes = TransacaoFinanceira.objects.select_related(
         'processo', 'processo__cliente'
     ).order_by('-data')
@@ -254,6 +259,8 @@ def financas_view(request):
     return render(request, 'financas.html', {
         'receita_total': receita_total,
         'pendente_total': pendente_total,
+        'total_transacoes': total_transacoes,
+        'cancelado_total': cancelado_total,
         'transacoes': transacoes,
         'dados_mensais': json.dumps(dados_mensais),
         'form': form,
